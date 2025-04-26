@@ -25,10 +25,12 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults()) // ✅ Enable CORS
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password/**").permitAll()
-                .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // ✅ Preflight allowed
-                .anyRequest().authenticated()
+            	    .requestMatchers("/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password/**").permitAll()
+            	    .requestMatchers("/admin/**").hasAuthority("ADMIN")
+            	    .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+            	    .anyRequest().authenticated()
+            	
+
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .httpBasic(Customizer.withDefaults());
