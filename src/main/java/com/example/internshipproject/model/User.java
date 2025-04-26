@@ -1,7 +1,5 @@
 package com.example.internshipproject.model;
 
-
-
 import java.sql.Timestamp;
 
 import jakarta.persistence.Column;

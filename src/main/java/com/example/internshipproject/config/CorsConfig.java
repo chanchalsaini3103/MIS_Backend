@@ -14,7 +14,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:5173"); // Change if your frontend port differs
+        config.addAllowedOrigin("http://localhost:5173"); 
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         
