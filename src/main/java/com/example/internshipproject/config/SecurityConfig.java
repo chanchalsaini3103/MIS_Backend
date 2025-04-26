@@ -13,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
@@ -20,9 +21,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
+            .csrf(csrf -> csrf.disable())
+            .cors(Customizer.withDefaults()) // ✅ THIS LINE added to allow CORS properly
             .authorizeHttpRequests(auth -> auth
-            		.requestMatchers("/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password/**").permitAll()
+                .requestMatchers("/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password/**").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
             )

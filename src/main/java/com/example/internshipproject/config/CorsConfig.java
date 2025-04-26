@@ -15,16 +15,35 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         
-        config.setAllowCredentials(true);
+        config.setAllowCredentials(true); // ✅ Very Important for cookies/session
         
-        // ✅ Allow both localhost and deployed Vercel frontend
         config.setAllowedOrigins(Arrays.asList(
             "http://localhost:5173",
             "https://mis-frontend-system.vercel.app"
         ));
         
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
+        config.setAllowedHeaders(Arrays.asList(
+            "Origin", 
+            "Content-Type",
+            "Accept",
+            "Authorization",
+            "X-Requested-With",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+        ));
+        
+        config.setExposedHeaders(Arrays.asList(
+            "Origin",
+            "Content-Type",
+            "Accept",
+            "Authorization",
+            "Access-Control-Allow-Origin",
+            "Access-Control-Allow-Credentials"
+        ));
+        
+        config.setAllowedMethods(Arrays.asList(
+            "GET", "POST", "PUT", "DELETE", "OPTIONS"
+        ));
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
