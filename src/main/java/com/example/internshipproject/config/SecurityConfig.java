@@ -22,11 +22,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .cors(Customizer.withDefaults()) // ✅ Allow CORS
             .csrf(csrf -> csrf.disable())
-            .cors(Customizer.withDefaults()) // ✅ THIS LINE added to allow CORS properly
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password/**").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // ✅ Allow preflight requests
                 .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
