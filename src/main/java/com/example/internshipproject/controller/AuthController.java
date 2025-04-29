@@ -16,7 +16,6 @@ import com.example.internshipproject.service.JwtService;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin("*")
 public class AuthController {
 
     @Autowired
