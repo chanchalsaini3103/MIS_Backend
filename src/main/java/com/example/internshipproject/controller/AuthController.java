@@ -1,13 +1,17 @@
 package com.example.internshipproject.controller;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID; // ✅ For token generation
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.internshipproject.model.User;
 import com.example.internshipproject.repo.UserRepository;
 import com.example.internshipproject.service.JwtService;
+import com.example.internshipproject.service.UserService;
 
 
 @RestController
@@ -93,43 +98,49 @@ public class AuthController {
         return "Error: Invalid email or password.";
     }
     
-    
-    @PostMapping("/forgot-password")
-    public String forgotPassword(@RequestParam String email) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.setResetToken(UUID.randomUUID().toString());
-            userRepository.save(user);
+ 
+    @Autowired
+    private UserService userService;
 
-            sendResetLinkEmail(user.getEmail(), user.getResetToken());
-            return "Reset link sent to your email.";
-        } else {
-            return "Email not registered.";
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        Optional<User> userOpt = userService.getUserByEmail(email);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
-    }
-    private void sendResetLinkEmail(String email, String token) {
+
+        User user = userOpt.get();
+        String token = UUID.randomUUID().toString();
+        user.setResetToken(token);
+        userService.save(user);
+
+        String resetLink = "https://internshipproject-frontend.onrender.com/reset-password/" + token;
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("Reset Your Password - Internship Project");
-        message.setText("Click here to reset your password: " +
-            "https://internshipproject-frontend.onrender.com/reset-password/" + token);
+        message.setSubject("Password Reset Request - Internship Project");
+        message.setText("Click to reset your password: " + resetLink);
+
         mailSender.send(message);
+
+        return ResponseEntity.ok("Reset email sent.");
     }
 
-
-	@PostMapping("/reset-password")
-    public String resetPassword(@RequestParam String token, @RequestParam String newPassword) {
-        Optional<User> userOptional = userRepository.findByResetToken(token);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.setPasswordHash(passwordEncoder.encode(newPassword));
-            user.setResetToken(null); // clear token
-            userRepository.save(user);
-            return "Password reset successful!";
-        } else {
-            return "Invalid or expired token.";
+    @PostMapping("/reset-password/{token}")
+    public ResponseEntity<?> resetPassword(@PathVariable String token, @RequestBody Map<String, String> request) {
+        Optional<User> userOpt = userService.getByResetToken(token);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token");
         }
+
+        User user = userOpt.get();
+        user.setPasswordHash(passwordEncoder.encode(request.get("newPassword")));
+        user.setResetToken(null); // clear token
+        userService.save(user);
+
+        return ResponseEntity.ok("Password reset successful.");
     }
+
 
 }
