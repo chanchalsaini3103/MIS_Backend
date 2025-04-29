@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version> <!-- You are using Spring Boot 3.4.4 -->
+        <version>3.4.4</version> <!-- Using Spring Boot 3.4.4 -->
         <relativePath/> 
     </parent>
 
@@ -20,13 +20,13 @@
     <description>Demo project for Spring Boot with JWT Authentication</description>
 
     <properties>
-        <java.version>17</java.version> <!-- Java 17 (must match your system setup) -->
-        <jjwt.version>0.11.5</jjwt.version> 
+        <java.version>17</java.version> <!-- Java 17 -->
+        <jjwt.version>0.11.5</jjwt.version> <!-- JWT Version -->
     </properties>
 
     <dependencies>
 
-        <!-- Spring Boot Starter Dependencies -->
+        <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -71,15 +71,15 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Database Drivers -->
+        <!-- PostgreSQL Driver -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.6.0</version> <!-- PostgreSQL driver -->
+            <version>42.6.0</version>
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Lombok (for @Data, @Getter, @Setter) -->
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -106,6 +106,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal> <!-- Ensures fat runnable JAR -->
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
