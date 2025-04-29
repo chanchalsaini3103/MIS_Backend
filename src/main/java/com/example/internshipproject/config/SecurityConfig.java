@@ -1,3 +1,4 @@
+
 package com.example.internshipproject.config;
 
 import org.springframework.context.annotation.Bean;
