@@ -27,8 +27,8 @@ public class User {
     private Status status = Status.active;
 
     private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-}
-
-enum Status {
-    active, inactive
+    
+    public static enum Status {
+        active, inactive
+    }
 }
