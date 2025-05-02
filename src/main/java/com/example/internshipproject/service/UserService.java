@@ -22,8 +22,5 @@ public class UserService {
 		  userRepository.save(user);
 	}
 
-	public Optional<User> getByResetToken(String token) {
-		  return userRepository.findByResetToken(token);
-	}
   
 }

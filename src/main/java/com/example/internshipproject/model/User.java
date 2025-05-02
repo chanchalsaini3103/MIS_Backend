@@ -21,7 +21,7 @@ public class User {
 
     private String role;
 
-    private String resetToken;
+    
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.active;

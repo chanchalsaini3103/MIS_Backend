@@ -6,16 +6,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-	@Override
-	public void addCorsMappings(CorsRegistry registry) {
-	    registry.addMapping("/**")
-	        .allowedOriginPatterns(
-	            "http://localhost:5173",
-	            "https://internshipproject-frontend.onrender.com"
-	        )
-	        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-	        .allowedHeaders("*")
-	        .allowCredentials(true);
-	}
 
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+            .allowedOrigins(
+                "http://localhost:5173", // for local testing
+                "https://mis-frontendsystem.onrender.com" // ✅ your frontend URL on Render
+            )
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .allowedHeaders("*")
+            .allowCredentials(true);
+    }
 }
