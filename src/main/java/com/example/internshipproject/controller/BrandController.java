@@ -23,7 +23,7 @@ import com.example.internshipproject.service.BrandService;
 @RequestMapping("/api/brands")
 @CrossOrigin(origins = {
 	    "http://localhost:5173",
-	    "https://mis-and-invoicing-system-frontend.onrender.com"
+	    "https://mia-frontend-mu0v.onrender.com"
 	}, allowCredentials = "true")
 public class BrandController {
 

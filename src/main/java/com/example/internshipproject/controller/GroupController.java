@@ -26,7 +26,7 @@ import com.example.internshipproject.service.GroupService;
 @CrossOrigin(
     origins = {
         "http://localhost:5173",
-        "https://mis-and-invoicing-system-frontend.onrender.com"
+        "https://mia-frontend-mu0v.onrender.com"
     },
     allowCredentials = "true"
 )

@@ -22,7 +22,7 @@ import com.example.internshipproject.service.EstimateService;
 
 @RestController
 @RequestMapping("/api/estimates")
-@CrossOrigin(origins = {"http://localhost:5173", "https://mis-and-invoicing-system-frontend.onrender.com"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5173", "https://mia-frontend-mu0v.onrender.com"}, allowCredentials = "true")
 public class EstimateController {
 
     @Autowired

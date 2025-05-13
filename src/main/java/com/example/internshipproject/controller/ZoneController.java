@@ -20,7 +20,7 @@ import com.example.internshipproject.service.ZoneService;
 
 @RestController
 @RequestMapping("/api/zones")
-@CrossOrigin(origins = { "http://localhost:5173", "https://mis-and-invoicing-system-frontend.onrender.com" }, allowCredentials = "true")
+@CrossOrigin(origins = { "http://localhost:5173", "https://mia-frontend-mu0v.onrender.com" }, allowCredentials = "true")
 public class ZoneController {
 
     @Autowired private ZoneService zoneService;

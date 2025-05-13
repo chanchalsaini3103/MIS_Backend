@@ -23,7 +23,7 @@ import com.example.internshipproject.service.ChainService;
 @RequestMapping("/api/chains")
 @CrossOrigin(origins = {
     "http://localhost:5173",
-    "https://mis-and-invoicing-system-frontend.onrender.com"
+    "https://mia-frontend-mu0v.onrender.com"
 }, allowCredentials = "true")
 public class ChainController {
 
