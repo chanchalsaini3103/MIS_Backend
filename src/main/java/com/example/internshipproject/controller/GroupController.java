@@ -23,10 +23,13 @@ import com.example.internshipproject.service.GroupService;
 
 @RestController
 @RequestMapping("/api/groups")
-@CrossOrigin(origins = {
-		  "http://localhost:5173",
-		  "https://groupmanagement-frontend.onrender.com"
-		})
+@CrossOrigin(
+    origins = {
+        "http://localhost:5173",
+        "https://mis-and-invoicing-system-frontend.onrender.com"
+    },
+    allowCredentials = "true"
+)
 public class GroupController {
 
     private static final Logger logger = LoggerFactory.getLogger(GroupController.class);

@@ -1,19 +1,23 @@
 package com.example.internshipproject.controller;
 
-import com.example.internshipproject.model.User;
-import com.example.internshipproject.repo.UserRepository;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@CrossOrigin(origins = {
-        "http://localhost:5173",
-        "https://groupmanagement-frontend.onrender.com"
-}, allowCredentials = "true")
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.internshipproject.model.User;
+import com.example.internshipproject.repo.UserRepository;
+
+import ch.qos.logback.core.status.Status;
+import jakarta.servlet.http.HttpSession;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -21,52 +25,52 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private HttpSession session;
 
-    // ✅ Register
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
+    public ResponseEntity<?> register(@RequestBody User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email already registered.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists.");
         }
-
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        user.setRole(user.getRole() != null ? user.getRole() : "USER");
+        user.setPasswordHash(encoder.encode(user.getPasswordHash()));
         user.setStatus(User.Status.active);
-        userRepository.save(user);
 
-        return ResponseEntity.ok("Registration Successful!");
+        userRepository.save(user);
+        return ResponseEntity.ok("User registered successfully.");
     }
 
-    // ✅ Login (creates session)
+    
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User loginUser, HttpSession session) {
-        Optional<User> userOptional = userRepository.findByEmail(loginUser.getEmail());
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            if (passwordEncoder.matches(loginUser.getPasswordHash(), user.getPasswordHash())) {
-                session.setAttribute("user", user); // ✅ Store user in session
-                return ResponseEntity.ok().body(user.getRole());
+    public ResponseEntity<?> login(@RequestBody User loginUser) {
+        Optional<User> userOpt = userRepository.findByEmail(loginUser.getEmail());
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (encoder.matches(loginUser.getPasswordHash(), user.getPasswordHash())) {
+                session.setAttribute("user", user); // force session to exist
+                return ResponseEntity.ok(user);
             }
         }
-        return ResponseEntity.status(401).body("Invalid email or password");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
     }
 
-    // ✅ Logout
+    @GetMapping("/session-check")
+    public ResponseEntity<?> sessionCheck() {
+        return ResponseEntity.ok(session.getAttribute("user") != null ? "Session Active" : "No session");
+    }
+
+
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpSession session) {
+    public ResponseEntity<?> logout() {
         session.invalidate();
         return ResponseEntity.ok("Logged out successfully.");
     }
 
-    // ✅ Get Current Logged-in User (optional)
-    @GetMapping("/me")
-    public ResponseEntity<?> currentUser(HttpSession session) {
+    @GetMapping("/current-user")
+    public ResponseEntity<?> currentUser() {
         User user = (User) session.getAttribute("user");
-        if (user != null) {
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.status(401).body("Not logged in");
-        }
+        return ResponseEntity.ok(user);
     }
 }

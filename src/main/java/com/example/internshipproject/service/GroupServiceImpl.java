@@ -28,7 +28,7 @@ public class GroupServiceImpl implements GroupService {
     public Group updateGroup(Long id, String newName) {
         Group g = repo.findById(id).orElseThrow(() -> new RuntimeException("Group not found"));
         g.setGroupName(newName);
-        // updatedAt will be handled automatically by @PreUpdate
+       
         return repo.save(g);
     }
 
